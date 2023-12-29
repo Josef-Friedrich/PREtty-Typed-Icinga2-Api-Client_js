@@ -56,6 +56,325 @@ type Feature =
 
 type Object = MonitoringObject | RuntimeObject | Feature
 
+interface ResultsCollection<T> {
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/createobjecthandler.cpp#L88
+   */
+  results: T[]
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L12-L16
+ */
+enum HAMode {
+  HARunOnce,
+  HARunEverywhere
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L57-L92
+ */
+interface ConfigObject {
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L59-L68
+   */
+  __name: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L69
+   */
+  zone: string
+
+  /**
+   * for example `_etc`
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L70
+   */
+  package: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L71
+   */
+  templates: string[]
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L72-L74
+   */
+  source_location: SourceLocation
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L75C8-L75C8
+   */
+  active: boolean
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L76-L78
+   */
+  paused: boolean
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L83
+   */
+  ha_mode: HAMode
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L87C35-L87C54
+   */
+  original_attributes: Record<string, any>
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/base/configobject.ti#L88-L90
+   */
+  version: number
+}
+
+interface SourceLocation {
+  first_column: number
+  first_line: number
+  last_column: number
+  last_line: number
+
+  /**
+   * "/etc/icinga2-custom/conf.d/api-users.conf"
+   */
+  path: string
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti
+ *
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L41-L63
+ */
+interface ApiUser extends ConfigObject {
+  /**
+   * Password string. Note: This attribute is hidden in API responses.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L14C32-L14C40
+   */
+  password?: string
+
+  /**
+   * Client Common Name (CN).
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L16C18-L16C27
+   */
+  client_cn?: string
+
+  /**
+   * Array of permissions. Either as string or dictionary with the keys `permission` and `filter`. The latter must be specified as function.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L17
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L21-L28
+   */
+  permissions: string[]
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/customvarobject.ti#L10
+ */
+interface CustomVarObject extends ConfigObject {
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/customvarobject.ti#L12
+   */
+  vars: Record<string, any>
+}
+
+interface Value {}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/checkable.ti
+ */
+interface Checkable extends CustomVarObject {
+  check_command: string
+
+  max_check_attempts: bigint
+
+  check_period: string
+
+  check_timeout: Value
+
+  check_interval: number
+
+  retry_interval: number
+
+  event_command: string
+
+  volatile: boolean
+
+  enable_active_checks: boolean
+
+  enable_passive_checks: boolean
+
+  enable_event_handler: boolean
+
+  enable_notifications: boolean
+
+  enable_flapping: boolean
+
+  enable_perfdata: boolean
+
+  flapping_ignore_states: string[]
+
+  /**
+   * @deprecated
+   */
+  flapping_threshold: number
+
+  flapping_threshold_low: number
+
+  flapping_threshold_high: number
+
+  notes: string
+
+  notes_url: string
+
+  action_url: string
+
+  icon_image: string
+
+  icon_image_alt: string
+
+  next_check: Timestamp
+
+  check_attempt: bigint
+
+  state_type: StateType
+
+  last_state_type: StateType
+
+  last_reachable: boolean
+
+  last_check_result: CheckResult
+
+  last_state_change: Timestamp
+
+  last_hard_state_change: Timestamp
+
+  last_state_unreachable: Timestamp
+
+  previous_state_change: Timestamp
+
+  severity: bigint
+
+  problem: boolean
+
+  handled: boolean
+
+  next_update: Timestamp
+
+  force_next_check: boolean
+
+  acknowledgement: bigint
+
+  acknowledgement_expiry: Timestamp
+
+  acknowledgement_last_change: Timestamp
+
+  force_next_notification: boolean
+
+  last_check: Timestamp
+
+  downtime_depth: bigint
+
+  flapping_current: number
+
+  flapping_last_change: Timestamp
+
+  flapping: boolean
+
+  command_endpoint: string
+
+  executions: Dictionary
+}
+
+interface CheckResult {}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/checkresult.ti#L38-L43
+ */
+enum StateType {
+  StateTypeSoft = 0,
+  StateTypeHard = 1
+}
+
+interface Dictionary {}
+
+/**
+ * for example `1699475880.364077`
+ */
+type TimeStamp = number
+
+type Timestamp = number
+
+interface Host {}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti
+ */
+interface Service extends Checkable {
+  groups: string
+  display_name: string
+  host_name: string
+  host: Host
+  state: ServiceState
+  last_state: ServiceState
+  last_hard_state: ServiceState
+  last_state_ok: TimeStamp
+  last_state_warning: TimeStamp
+  last_state_critical: TimeStamp
+  last_state_unknown: TimeStamp
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti
+ */
+interface User extends CustomVarObject {
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L14-L22
+   */
+  display_name: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L23-L25
+   */
+  groups: string[]
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L26-L30
+   */
+  period: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L32C11-L32C11
+   */
+  types: string[]
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L34C3-L34C3
+   */
+  states: string[]
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L37
+   */
+  email: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L38
+   */
+  pager: string
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L40-L42
+   */
+  enable_notifications: boolean
+
+  /**
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L44
+   */
+  last_notification: number
+}
+
 /**
  * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L581-L585
  */
@@ -87,12 +406,19 @@ export async function getObjects(
 /**
  * 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN
  */
-export type Status = 0 | 1 | 2 | 3
+export type State = 0 | 1 | 2 | 3
 
 /**
  * 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN
+ *
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/checkresult.ti#L25-L31
  */
-export type ServiceStatus = Status
+export enum ServiceState {
+  ServiceOK = 0,
+  ServiceWarning = 1,
+  ServiceCritical = 2,
+  ServiceUnknown = 3
+}
 
 /**
  * 0=UP, 1=DOWN.
@@ -113,7 +439,7 @@ interface ProcessCheckResultParams {
   /**
    * For services: 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN, for hosts: 0=UP, 1=DOWN.
    */
-  exit_status: ServiceStatus | HostStatus
+  exit_status: ServiceState | HostStatus
 
   /**
    * One or more lines of the plugin main output. Does **not** contain the performance data.

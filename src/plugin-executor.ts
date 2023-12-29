@@ -1,9 +1,9 @@
 import { spawn } from 'node:child_process'
 
-import { Status } from './api.js'
+import { State } from './api.js'
 
 interface CheckResult {
-  status: Status
+  status: State
   output: string
 }
 
@@ -25,7 +25,7 @@ export function invokePlugin(
     })
 
     plugin.on('close', (code) => {
-      let status: Status = 3
+      let status: State = 3
       if (
         code != null &&
         (code === 0 || code === 1 || code === 2 || code === 3)

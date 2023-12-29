@@ -27,7 +27,7 @@ export interface MonitoringService {
   /**
    * @example 0
    */
-  state: api.ServiceStatus
+  state: api.ServiceState
 
   /**
    * @example "APT OK: 0 packages available for upgrade (0 critical updates)."
@@ -36,7 +36,7 @@ export interface MonitoringService {
 }
 
 export async function getServices(
-  state?: api.ServiceStatus
+  state?: api.ServiceState
 ): Promise<MonitoringService[]> {
   const results = await client.request('objects/services', 'GET', {
     attrs: ['name', 'state', 'last_check_result'],
@@ -63,7 +63,7 @@ export async function getServices(
 export async function sendServiceCheckResult(
   hostName: string,
   serviceName: string,
-  status: api.ServiceStatus,
+  status: api.ServiceState,
   pluginOutput: string
 ) {
   const result = await api.processCheckResult(client, {
