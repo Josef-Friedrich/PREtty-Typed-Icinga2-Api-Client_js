@@ -25,11 +25,18 @@ describe('getObjects', () => {
 
   test('Service', async () => {
     const result = await getObjects(client, 'Service')
-    debugFirst(result)
-
   })
 
   test('User', async () => {
-    const result = await getObjects(client, 'User')
+    const objetcs = await getObjects(client, 'User', {
+      filter: 'user.name == "user2"',
+      attrs: ['display_name']
+    })
+
+    const user = objetcs[0]
+
+    expect(user.type).toBe('User')
+    expect(user.name).toBe('user2')
+    expect(user.attrs.display_name).toBe('User 2')
   })
 })

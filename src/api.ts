@@ -1,3 +1,5 @@
+// https://github.com/Icinga/icinga2/blob/master/doc/09-object-types.md
+
 import type { Client } from './client.js'
 
 export type HttpMethod = 'GET' | 'POST'
@@ -397,47 +399,74 @@ interface Service extends Checkable {
  */
 interface User extends CustomVarObject {
   /**
+   * A short description of the user.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L14-L22
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L923
    */
   display_name: string
 
   /**
+   * An array of group names.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L23-L25
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L927C69-L927C93
    */
   groups: string[]
 
   /**
+   * The name of a time period which determines when a notification for this user should be triggered. Not set by default (effectively 24x7).
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L26-L30
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L929C69-L929C205
    */
   period: string
 
   /**
+   * A set of type filters when a notification for this user should be triggered. By default everything is matched.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L32C11-L32C11
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L930C69-L930C179
    */
   types: string[]
 
   /**
+   * A set of state filters when a notification for this should be triggered. By default everything is matched.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L34C3-L34C3
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L931C69-L931C175
    */
   states: string[]
 
   /**
+   * An email string for this user. Useful for notification commands.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L37
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L924C69-L924C133
    */
   email: string
 
   /**
+   * A pager string for this user. Useful for notification commands.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L38
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L925C69-L925C132
    */
   pager: string
 
   /**
+   * Whether notifications are enabled for this user. Defaults to true.
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L40-L42
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L928C69-L928C135
    */
   enable_notifications: boolean
 
   /**
+   * When the last notification was sent for this user (as a UNIX timestamp).
+   *
    * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti#L44
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L937C54-L937C127
    */
   last_notification: number
 }
@@ -460,14 +489,23 @@ interface GetObjectsParams {
    * Enable meta information using `?meta=used_by` (references from other objects) and/or `?meta=location` (location information) specified as list. Defaults to disabled.
    */
   meta?: string[]
+
+  /**
+   * https://icinga.com/docs/icinga-2/latest/doc/12-icinga2-api/#filters
+   */
+  filter?: string
 }
 
 export async function getObjects(
   client: Client,
   objects: Object,
   params: GetObjectsParams = {}
-) {
-  return await client.request(`objects/${objects}s`, 'GET', params)
+): Promise<ObjectQueriesResult[]> {
+  const results = await client.request(`objects/${objects}s`, 'GET', params)
+  if (results.results != null) {
+    return results.results
+  }
+  throw new Error(results)
 }
 
 /**
@@ -551,6 +589,46 @@ interface Result {
 
 interface ProcessCheckResultResult {
   results: Result[]
+}
+
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L620-L631
+ */
+interface ObjectQueriesResult {
+  /**
+   * Full object name.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L626
+   */
+  name: string
+
+  /**
+   * Object type.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L627
+   */
+  type: string
+
+  /**
+   * Object attributes (can be filtered using the URL parameter `attrs`).
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L628
+   */
+  attrs: User | Service
+
+  /**
+   * [Joined object types](12-icinga2-api.md#icinga2-api-config-objects-query-joins) as key, attributes as nested dictionary. Disabled by default.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L629
+   */
+  joins: Record<string, User | Service>
+
+  /**
+   * Contains `used_by` object references. Disabled by default, enable it using `?meta=used_by` as URL parameter.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L630C29-L630C137
+   */
+  meta: Record<string, any>
 }
 
 /**
