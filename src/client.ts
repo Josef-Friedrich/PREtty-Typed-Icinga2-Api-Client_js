@@ -54,14 +54,38 @@ export class Client {
     return `https://${this.domain}:${this.port}/v1/${path}`
   }
 
-  public async request(path: string, method: HttpMethod, data: any) {
+  public async request(
+    path: string,
+    method: HttpMethod,
+    data: any,
+    config: RequestConfig = { returnSingleResult: true }
+  ) {
     const response = await fetch(this.getUrl(path), {
       headers: this.getHeaders(method),
       method: 'POST',
       body: JSON.stringify(data)
     })
-    return await response.json()
+
+    const body = await response.json()
+
+    if (config.throwError && response.status > 300) {
+      throw new Error(body)
+    }
+
+    // Successful requests will send back a response body containing a results list.
+    if (body.results.length === 1 && config.returnSingleResult) {
+      return body.results[0]
+    }
+    return body.results
   }
+}
+
+interface RequestConfig {
+  throwError?: boolean
+  /**
+   * Return a single result as a single item rather than a list.
+   */
+  returnSingleResult?: boolean
 }
 
 export function getClient(): Client {

@@ -1,67 +1,93 @@
 import { test, expect, describe } from 'vitest'
 
-import { getObjects } from './low-level-api.js'
+import { queryObjects, createObject, deleteObject } from './low-level-api.js'
 
 import { getClient } from './client.js'
+import { debug } from './helper.test.js'
 
 const client = getClient()
+describe('low-level-api.ts', () => {
+  describe('function queryObjects()', () => {
+    test('ApiUser', async () => {
+      const result = await queryObjects(client, 'ApiUser')
 
-function debug(result: any) {
-  console.log(JSON.stringify(result, null, 2))
-}
+      const apiUser = result[0]
 
-function getFirstResult(result: any) {
-  return result.results[0]
-}
-
-function debugFirst(result: any) {
-  debug(getFirstResult(result))
-}
-
-describe('getObjects', () => {
-  test('ApiUser', async () => {
-    const result = await getObjects(client, 'ApiUser')
-
-    const apiUser = result[0]
-
-    expect(apiUser.type).toBe('ApiUser')
-    expect(apiUser.name).toBe('api')
-  })
-
-  test('Host', async () => {
-    const objects = await getObjects(client, 'Host', {
-      filter: 'host.display_name == "Host 1"'
+      expect(apiUser.type).toBe('ApiUser')
+      expect(apiUser.name).toBe('api')
     })
 
-    const host = objects[0]
+    test('Host', async () => {
+      const objects = await queryObjects(client, 'Host', {
+        filter: 'host.display_name == "Host 1"'
+      })
 
-    expect(host.type).toBe('Host')
-    expect(host.name).toBe('Host1')
-    expect(host.attrs.display_name).toBe('Host 1')
-  })
+      const host = objects[0]
 
-  test('Service', async () => {
-    const objects = await getObjects(client, 'Service', {
-      filter: 'service.name == "Service1"'
+      expect(host.type).toBe('Host')
+      expect(host.name).toBe('Host1')
+      expect(host.attrs.display_name).toBe('Host 1')
     })
 
-    const service = objects[0]
+    test('Service', async () => {
+      const objects = await queryObjects(client, 'Service', {
+        filter: 'service.name == "Service1"'
+      })
 
-    expect(service.type).toBe('Service')
-    expect(service.name).toBe('Host1!Service1')
-    expect(service.attrs.vars.description).toBe('An additional description')
-  })
+      const service = objects[0]
 
-  test('User', async () => {
-    const objetcs = await getObjects(client, 'User', {
-      filter: 'user.name == "user2"',
-      attrs: ['display_name']
+      expect(service.type).toBe('Service')
+      expect(service.name).toBe('Host1!Service1')
+      expect(service.attrs.vars.description).toBe('An additional description')
     })
 
-    const user = objetcs[0]
+    test('User', async () => {
+      const objetcs = await queryObjects(client, 'User', {
+        filter: 'user.name == "user2"',
+        attrs: ['display_name']
+      })
 
-    expect(user.type).toBe('User')
-    expect(user.name).toBe('user2')
-    expect(user.attrs.display_name).toBe('User 2')
+      const user = objetcs[0]
+
+      expect(user.type).toBe('User')
+      expect(user.name).toBe('user2')
+      expect(user.attrs.display_name).toBe('User 2')
+    })
+  })
+
+  describe('Function createObject', () => {
+    test('host', async () => {
+      async function deleteHost() {
+        return await deleteObject(client, 'Host', 'test-host', {
+          cascade: true
+        })
+      }
+
+      // Maybe the host already exists
+      await deleteHost()
+
+      const createResult = await createObject(client, 'Host', 'test-host', {
+        templates: ['generic-host'],
+        attrs: {
+          display_name: 'Test Host',
+          address: '1.2.3.4'
+        }
+      })
+
+      expect(createResult.code).toBe(200)
+      expect(createResult.status).toBe('Object was created')
+
+      const hosts = await queryObjects(client, 'Host', {
+        filter: 'host.name == "test-host"'
+      })
+
+      expect(hosts[0].attrs.display_name).toBe('Test Host')
+
+      const deleteResult = await deleteHost()
+
+      expect(deleteResult.code).toBe(200)
+      expect(deleteResult.name).toBe('test-host')
+      expect(deleteResult.status).toBe('Object was deleted.')
+    })
   })
 })

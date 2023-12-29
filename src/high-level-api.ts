@@ -67,16 +67,11 @@ export async function sendServiceCheckResult(
   serviceName: string,
   status: api.ServiceState,
   pluginOutput: string
-): Promise<ProcessCheckResult[]> {
-  const results = await api.processCheckResult(client, {
+): Promise<ProcessCheckResult> {
+  return await api.processCheckResult(client, {
     type: 'Service',
     filter: `host.name=="${hostName}" && service.name=="${serviceName}"`,
     exit_status: status,
     plugin_output: pluginOutput
   })
-
-  if (results.results != null) {
-    return results.results
-  }
-  throw new Error('Failed to send')
 }
