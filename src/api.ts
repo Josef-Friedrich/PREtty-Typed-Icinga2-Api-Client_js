@@ -185,16 +185,44 @@ interface Value {}
  * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/checkable.ti
  */
 interface Checkable extends CustomVarObject {
+  /**
+   * The name of the check command.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L717C69-L717C99
+   */
   check_command: string
 
+  /**
+   * The number of times a service is re-checked before changing into a hard state. Defaults to 3.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L718C69-L718C162
+   */
   max_check_attempts: bigint
 
+  /**
+   * The name of a time period which determines when this service should be checked. Not set by default (effectively 24x7).
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L719C69-L719C187
+   */
   check_period: string
 
+  /**
+   * Check command timeout in seconds. Overrides the CheckCommand's `timeout` attribute.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L720C69-L720C152
+   */
   check_timeout: Value
 
+  /**
+   * The check interval (in seconds). This interval is used for checks when the service is in a `HARD` state. Defaults to `5m`.
+   *
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L721C69-L721C191
+   */
   check_interval: number
 
+  /**
+   * This interval is used for checks when the service is in a `SOFT` state. Defaults to `1m`. Note: This does not affect the scheduling [after a passive check result](08-advanced-topics.md#check-result-freshness).
+   */
   retry_interval: number
 
   event_command: string
@@ -312,16 +340,55 @@ interface Host {}
  * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti
  */
 interface Service extends Checkable {
+  /**
+   * The service groups this service belongs to.
+   */
   groups: string
+
+  /**
+   * A short description of the service.
+   */
   display_name: string
+
+  /**
+   * The host this service belongs to. There must be a `Host` object with that name.
+   */
   host_name: string
   host: Host
+
+  /**
+   * The current state (0 = OK, 1 = WARNING, 2 = CRITICAL, 3 = UNKNOWN).
+   */
   state: ServiceState
+
+  /**
+   * The previous state (0 = OK, 1 = WARNING, 2 = CRITICAL, 3 = UNKNOWN).
+   */
   last_state: ServiceState
+
+  /**
+   * The last hard state (0 = OK, 1 = WARNING, 2 = CRITICAL, 3 = UNKNOWN).
+   */
   last_hard_state: ServiceState
+
+  /**
+   * When the last OK state occurred (as a UNIX timestamp).
+   */
   last_state_ok: TimeStamp
+
+  /**
+   * When the last WARNING state occurred (as a UNIX timestamp).
+   */
   last_state_warning: TimeStamp
+
+  /**
+   * When the last CRITICAL state occurred (as a UNIX timestamp).
+   */
   last_state_critical: TimeStamp
+
+  /**
+   * When the last UNKNOWN state occurred (as a UNIX timestamp).
+   */
   last_state_unknown: TimeStamp
 }
 
