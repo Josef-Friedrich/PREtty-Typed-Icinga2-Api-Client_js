@@ -1,0 +1,21 @@
+{
+  "name": "icinga-api",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/main.js",
+  "author": {
+    "name": "Josef Friedrich",
+    "email": "josef@friedrich.rocks",
+    "url": "https://josef.friedrich.rocks"
+  },
+  "scripts": {
+    "build": "rimraf ./dist && tsc --project tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "rimraf": "^5.0.5"
+  }
+}
