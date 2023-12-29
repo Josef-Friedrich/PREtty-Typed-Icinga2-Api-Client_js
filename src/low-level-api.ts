@@ -336,7 +336,73 @@ type TimeStamp = number
 
 type Timestamp = number
 
-interface Host {}
+/**
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti
+ */
+interface Host extends Checkable {
+  /**
+   * A list of host groups this host belongs to.
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L18-L20
+   */
+  groups: string[]
+
+  /**
+   * A short description of the host (e.g. displayed by external interfaces instead of the name if set).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L22-L30
+   */
+  display_name: string
+
+  /**
+   * The host's IPv4 address. Available as command runtime macro `$address$` if set.
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L32
+   */
+  address: string
+
+  /**
+   * The host's IPv6 address. Available as command runtime macro `$address6$` if set.
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L33
+   */
+  address6: string
+
+  /**
+   * The current state (0 = UP, 1 = DOWN).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L35-L37
+   */
+  state: HostState
+
+  /**
+   * The previous state (0 = UP, 1 = DOWN).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L38-L40
+   */
+  last_state: HostState
+
+  /**
+   * The last hard state (0 = UP, 1 = DOWN).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L41-L43
+   */
+  last_hard_state: HostState
+
+  /**
+   * When the last UP state occurred (as a UNIX timestamp).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L44
+   */
+  last_state_up: Timestamp
+
+  /**
+   * When the last DOWN state occurred (as a UNIX timestamp).
+   * 
+   * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L45
+   */
+  last_state_down: Timestamp
+}
 
 /**
  * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti
@@ -491,6 +557,8 @@ interface GetObjectsParams {
   meta?: string[]
 
   /**
+   * For example `host.display_name == "Host 1"` or `host.name=="Host 1" && service.name=="Service 1"`
+   * 
    * https://icinga.com/docs/icinga-2/latest/doc/12-icinga2-api/#filters
    */
   filter?: string
@@ -528,8 +596,10 @@ export enum ServiceState {
 /**
  * 0=UP, 1=DOWN.
  */
-export type HostStatus = 0 | 1
-
+export enum HostState {
+  HostUp = 0,
+  HostDown = 1
+}
 /**
  * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L1064-L1117
  */
@@ -544,7 +614,7 @@ interface ProcessCheckResultParams {
   /**
    * For services: 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN, for hosts: 0=UP, 1=DOWN.
    */
-  exit_status: ServiceState | HostStatus
+  exit_status: ServiceState | HostState
 
   /**
    * One or more lines of the plugin main output. Does **not** contain the performance data.
@@ -582,13 +652,13 @@ interface ProcessCheckResultParams {
   ttl?: number
 }
 
-interface Result {
+export interface ProcessCheckResult {
   code: number
   status: string
 }
 
-interface ProcessCheckResultResult {
-  results: Result[]
+interface ProcessCheckResultResults {
+  results: ProcessCheckResult[]
 }
 
 /**
@@ -637,6 +707,6 @@ interface ObjectQueriesResult {
 export async function processCheckResult(
   client: Client,
   params: ProcessCheckResultParams
-): Promise<ProcessCheckResultResult> {
+): Promise<ProcessCheckResultResults> {
   return await client.request('actions/process-check-result', 'POST', params)
 }

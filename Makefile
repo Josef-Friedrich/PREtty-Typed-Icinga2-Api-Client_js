@@ -15,6 +15,7 @@ set_test_config:
 	sudo rsync -av --delete resources/etc-icinga2/ /etc/icinga2/
 	sudo chown -R nagios:nagios /etc/icinga2/
 	sudo systemctl restart icinga2.service
+	sudo icinga2 daemon -C
 
 get_test_config:
 	sudo rsync -av --delete /etc/icinga2/ resources/etc-icinga2/
@@ -24,5 +25,5 @@ patch_config:
 	sudo cp /etc/icinga2-api-client.json /etc/icinga2-api-client.json.bak
 	sudo cp resources/icinga2-api-client.json /etc/icinga2-api-client.json
 
-test:
+test: set_test_config
 	npm run test

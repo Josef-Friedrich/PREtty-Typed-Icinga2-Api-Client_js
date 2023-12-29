@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 
-import type { HttpMethod } from './api.js'
+import type { HttpMethod } from './low-level-api.js'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
