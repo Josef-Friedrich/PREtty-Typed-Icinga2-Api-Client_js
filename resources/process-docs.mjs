@@ -4,8 +4,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 
 function seeLink(title, url) {
-
-    return ` @see [${title}](${url})`
+  return `* @see [${title}](${url})`
 }
 
 for (let file of fs.readdirSync('./src')) {
@@ -26,14 +25,15 @@ for (let file of fs.readdirSync('./src')) {
 
   // * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L717/
 
-  content = content.replace(/\* https:\S+\/doc\/(\S+)\?\S+#(\S+)/g, (p, p1, p2) => {
-    console.log(p, p1, p2)
-    if (p1 != null && p2 != null) {
-      return seeLink(`${p1} ${p2}`, p)
+  content = content.replace(
+    /\* (https:\S+\/doc\/(\S+)\?\S+#(\S+))/g,
+    (p, p1, p2, p3) => {
+      if (p1 != null && p2 != null) {
+        return seeLink(`${p2} ${p3}`, p1)
+      }
+      return p
     }
-    return p
-  })
-
+  )
 
   fs.writeFileSync(file, content)
 }
