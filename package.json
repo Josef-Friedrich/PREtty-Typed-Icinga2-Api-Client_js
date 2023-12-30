@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "rimraf ./dist && tsc --project tsconfig.build.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "doc": "typedoc src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
