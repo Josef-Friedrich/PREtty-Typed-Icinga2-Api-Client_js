@@ -26,14 +26,35 @@ for (let file of fs.readdirSync('./src')) {
   // * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L717/
 
   content = content.replace(
-    /\* (https:\S+\/doc\/(\S+)\?\S+#(\S+))/g,
-    (p, p1, p2, p3) => {
-      if (p1 != null && p2 != null) {
-        return seeLink(`${p2} ${p3}`, p1)
+    new RegExp(
+      '\\* ' +
+        '(' +
+        'https://github.com/Icinga/icinga2/blob/' +
+        '[a-f0-9]{40,}' +
+        '/' +
+        '([^# \\n]+)' +
+        '(#(\\S+))?' +
+        ')',
+      'g'
+    ),
+    (p, p1, p2, p3, p4) => {
+      const url = p1
+      let relPath = p2
+      relPath = relPath.replace(/\?plain=1/g, '')
+      const line = p4
+
+      console.log('url', url)
+      console.log('relPath', relPath)
+      console.log('line', line)
+
+      if (line != null) {
+        return seeLink(`${relPath} ${line}`, url)
+      } else if (relPath != null) {
+        return seeLink(relPath, url)
       }
       return p
     }
   )
 
-  fs.writeFileSync(file, content)
+  //fs.writeFileSync(file, content)
 }
