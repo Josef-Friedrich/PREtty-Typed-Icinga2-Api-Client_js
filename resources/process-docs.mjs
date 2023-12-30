@@ -14,10 +14,8 @@ for (let file of fs.readdirSync('./src')) {
     console.log(p1, p2)
     if (p1 === p2) {
       return p1
-    } else {
-      p
     }
+    return p
   })
-  //   fs.writeFileSync(file, content)
-  //   console.log(content)
+  fs.writeFileSync(file, content)
 }
