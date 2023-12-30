@@ -27,3 +27,6 @@ patch_config:
 
 test: set_test_config
 	npm run test
+
+process_docs:
+	./resources/process-docs.mjs
