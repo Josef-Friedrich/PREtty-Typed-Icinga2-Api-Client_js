@@ -43,9 +43,9 @@ for (let file of fs.readdirSync('./src')) {
       relPath = relPath.replace(/\?plain=1/g, '')
       const line = p4
 
-      console.log('url', url)
-      console.log('relPath', relPath)
-      console.log('line', line)
+    //   console.log('url', url)
+    //   console.log('relPath', relPath)
+    //   console.log('line', line)
 
       if (line != null) {
         return seeLink(`${relPath} ${line}`, url)
@@ -56,5 +56,5 @@ for (let file of fs.readdirSync('./src')) {
     }
   )
 
-  //fs.writeFileSync(file, content)
+  fs.writeFileSync(file, content)
 }
