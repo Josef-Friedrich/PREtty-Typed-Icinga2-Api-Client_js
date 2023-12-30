@@ -1,11 +1,11 @@
-// https://github.com/Icinga/icinga2/blob/master/doc/09-object-types.md
+// https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md
 
 import type { Client } from './client.js'
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 /**
- * https://github.com/Icinga/icinga2/blob/master/doc/09-object-types.md#object-types-monitoring
+ * @see [doc/09-object-types.md object-types-monitoring](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#object-types-monitoring)
  */
 type MonitoringObject =
   | 'ApiUser'
@@ -26,12 +26,12 @@ type MonitoringObject =
   | 'Zone'
 
 /**
- * https://github.com/Icinga/icinga2/blob/master/doc/09-object-types.md#runtime-objects-
+ * @see [doc/09-object-types.md runtime-objects-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#runtime-objects-)
  */
 type RuntimeObject = 'Comment' | 'Downtime'
 
 /**
- * https://github.com/Icinga/icinga2/blob/master/doc/09-object-types.md#features-
+ * @see [doc/09-object-types.md features-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#features-)
  */
 type Feature =
   | 'ApiListener'
@@ -137,7 +137,6 @@ interface SourceLocation {
 
 /**
  * @see [lib/remote/apiuser.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti)
- *
  * @see [doc/09-object-types.md L41-L63](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L41-L63)
  */
 export interface ApiUser extends ConfigObject {
