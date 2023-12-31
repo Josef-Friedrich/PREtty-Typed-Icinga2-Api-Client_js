@@ -383,7 +383,7 @@ export interface ApiUser extends ConfigObject {
  * A check command definition. Additional default command custom variables can be
  * defined here.
  *
- * Example:
+ * @example
  *
  * ```
  * object CheckCommand "http" {
@@ -430,6 +430,8 @@ export interface CheckCommand {}
  * dictionary. Best practice is to assign a dictionary as value which
  * provides additional details such as the `description` next to the `value`.
  *
+ * @example
+ *
  * ```
  *   arguments = {
  *     "--parameter" = {
@@ -443,11 +445,11 @@ export interface CheckCommand {}
  */
 export interface CheckCommandArguments {}
 
-/*
+/**
  * Dependency objects are used to specify dependencies between hosts and services. Dependencies
  * can be defined as Host-to-Host, Service-to-Service, Service-to-Host, or Host-to-Service
  * relations.
- * 
+ *
  * > **Best Practice**
  * >
  * > Rather than creating a `Dependency` object for a specific host or service it is usually easier
@@ -455,44 +457,102 @@ export interface CheckCommandArguments {}
  * > dependency to a number of hosts or services. Use the `to` keyword to set the specific target
  * > type for `Host` or `Service`.
  * > Check the [dependencies](03-monitoring-basics.md#dependencies) chapter for detailed examples.
- * 
- * Service-to-Service Example:
- * 
+ *
+ * @example Service-to-Service
+ *
  * ```
  * object Dependency "webserver-internet" {
  *   parent_host_name = "internet"
  *   parent_service_name = "ping4"
- * 
+ *
  *   child_host_name = "webserver"
  *   child_service_name = "ping4"
- * 
+ *
  *   states = [ OK, Warning ]
- * 
+ *
  *   disable_checks = true
  * }
  * ```
- * 
- * Host-to-Host Example:
- * 
+ *
+ * @example Host-to-Host
+ *
  * ```
  * object Dependency "webserver-internet" {
  *   parent_host_name = "internet"
- * 
+ *
  *   child_host_name = "webserver"
- * 
+ *
  *   states = [ Up ]
- * 
+ *
  *   disable_checks = true
  * }
  * ```
- * 
+ *
  * @see [doc/09-object-types.md L153-L258](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L153-L258)
  */
-export interface Dependency {
-
-}
+export interface Dependency {}
 
 /**
+ * Endpoint objects are used to specify connection information for remote
+ * Icinga 2 instances. More details can be found in the [distributed monitoring chapter](06-distributed-monitoring.md#distributed-monitoring).
+ *
+ * @example
+ *
+ * ```
+ * object Endpoint "icinga2-agent1.localdomain" {
+ *   host = "192.168.56.111"
+ *   port = 5665
+ *   log_duration = 1d
+ * }
+ * ```
+ *
+ * @example (disable replay log):
+ *
+ * ```
+ * object Endpoint "icinga2-agent1.localdomain" {
+ *   host = "192.168.5.111"
+ *   port = 5665
+ *   log_duration = 0
+ * }
+ * ```
+ *
+ * @see [doc/09-object-types.md L260-L293](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L260-L293)
+ */
+export interface Endpoint {}
+
+/**
+ * An event command definition.
+ *
+ * @example
+ *
+ * ```
+ * object EventCommand "restart-httpd-event" {
+ *   command = "/opt/bin/restart-httpd.sh"
+ * }
+ * ```
+ *
+ * @see [doc/09-object-types.md L295-L320](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L295-L320)
+ */
+interface EventCommand {}
+
+/**
+ * A host.
+ * 
+ * @example
+ * 
+ * ```
+ * object Host "icinga2-agent1.localdomain" {
+ *   display_name = "Linux Client 1"
+ *   address = "192.168.56.111"
+ *   address6 = "2a00:1450:4001:815::2003"
+ * 
+ *   groups = [ "linux-servers" ]
+ * 
+ *   check_command = "hostalive"
+ * }
+ * ```
+ * 
+ * @see [doc/09-object-types.md L323-L413](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L323-L413)
  * @see [lib/icinga/host.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti)
  */
 export interface Host extends Checkable {
@@ -558,6 +618,148 @@ export interface Host extends Checkable {
    * @see [lib/icinga/host.ti L45](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti#L45)
    */
   last_state_down: Timestamp
+}
+
+/**
+ * A group of hosts.
+ * 
+ * > **Best Practice**
+ * >
+ * > Assign host group members using the [group assign](17-language-reference.md#group-assign) rules.
+ * 
+ * @example
+ * 
+ * ```
+ * object HostGroup "linux-servers" {
+ *   display_name = "Linux Servers"
+ * 
+ *   assign where host.vars.os == "Linux"
+ * }
+ * ```
+ * 
+ * @see [doc/09-object-types.md L417-L440](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L417-L440)
+ */
+export interface HostGroup {
+
+}
+
+/**
+ * Notification objects are used to specify how users should be notified in case
+ * of host and service state changes and other events.
+ * 
+ * > **Best Practice**
+ * >
+ * > Rather than creating a `Notification` object for a specific host or service it is
+ * > usually easier to just create a `Notification` template and use the `apply` keyword
+ * > to assign the notification to a number of hosts or services. Use the `to` keyword
+ * > to set the specific target type for `Host` or `Service`.
+ * > Check the [notifications](03-monitoring-basics.md#alert-notifications) chapter for detailed examples.
+ * 
+ * Example:
+ * 
+ * ```
+ * object Notification "localhost-ping-notification" {
+ *   host_name = "localhost"
+ *   service_name = "ping4"
+ * 
+ *   command = "mail-notification"
+ * 
+ *   users = [ "user1", "user2" ] // reference to User objects
+ * 
+ *   types = [ Problem, Recovery ]
+ *   states = [ Critical, Warning, OK ]
+ * }
+ * ```
+ * 
+ * @see [doc/09-object-types.md L444-L527](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L444-L527)
+ */
+export interface Notification {
+
+}
+
+/**
+ * A notification command definition.
+ * 
+ * @example
+ * 
+ * ```
+ * object NotificationCommand "mail-service-notification" {
+ *   command = [ ConfigDir + "/scripts/mail-service-notification.sh" ]
+ * 
+ *   arguments += {
+ *     "-4" = {
+ *       required = true
+ *       value = "$notification_address$"
+ *     }
+ *     "-6" = "$notification_address6$"
+ *     "-b" = "$notification_author$"
+ *     "-c" = "$notification_comment$"
+ *     "-d" = {
+ *       required = true
+ *       value = "$notification_date$"
+ *     }
+ *     "-e" = {
+ *       required = true
+ *       value = "$notification_servicename$"
+ *     }
+ *     "-f" = {
+ *       value = "$notification_from$"
+ *       description = "Set from address. Requires GNU mailutils (Debian/Ubuntu) or mailx (RHEL/SUSE)"
+ *     }
+ *     "-i" = "$notification_icingaweb2url$"
+ *     "-l" = {
+ *       required = true
+ *       value = "$notification_hostname$"
+ *     }
+ *     "-n" = {
+ *       required = true
+ *       value = "$notification_hostdisplayname$"
+ *     }
+ *     "-o" = {
+ *       required = true
+ *       value = "$notification_serviceoutput$"
+ *     }
+ *     "-r" = {
+ *       required = true
+ *       value = "$notification_useremail$"
+ *     }
+ *     "-s" = {
+ *       required = true
+ *       value = "$notification_servicestate$"
+ *     }
+ *     "-t" = {
+ *       required = true
+ *       value = "$notification_type$"
+ *     }
+ *     "-u" = {
+ *       required = true
+ *       value = "$notification_servicedisplayname$"
+ *     }
+ *     "-v" = "$notification_logtosyslog$"
+ *   }
+ * 
+ *   vars += {
+ *     notification_address = "$address$"
+ *     notification_address6 = "$address6$"
+ *     notification_author = "$notification.author$"
+ *     notification_comment = "$notification.comment$"
+ *     notification_type = "$notification.type$"
+ *     notification_date = "$icinga.long_date_time$"
+ *     notification_hostname = "$host.name$"
+ *     notification_hostdisplayname = "$host.display_name$"
+ *     notification_servicename = "$service.name$"
+ *     notification_serviceoutput = "$service.output$"
+ *     notification_servicestate = "$service.state$"
+ *     notification_useremail = "$user.email$"
+ *     notification_servicedisplayname = "$service.display_name$"
+ *   }
+ * }
+ * ```
+ * 
+ * @see [doc/09-object-types.md L530-L622](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L530-L622)
+ */
+export interface NotificationCommand {
+
 }
 
 /**
