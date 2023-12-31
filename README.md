@@ -1,6 +1,6 @@
-# PRETIAC
+[![npm](https://img.shields.io/npm/v/pretiac.svg)](https://npmjs.com/package/pretiac)
 
-PREtty Typed Icinga2 Api Client
+# pretiac: PREtty Typed Icinga2 Api Client
 
 ## Similar projects 
 
