@@ -1,0 +1,13 @@
+name: Build TypeDoc
+on: [push]
+jobs:
+  build_typedoc:
+    runs-on: ubuntu-latest
+    name: Build TypeDoc
+    steps:
+    - uses: actions/checkout@v2
+    - id: Build-TypeDoc
+      uses: zakodium/typedoc-action@1.0.1
+      with:
+        entry: 'src/main.ts'
+        token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
