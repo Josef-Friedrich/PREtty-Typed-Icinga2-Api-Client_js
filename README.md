@@ -1,14 +1,15 @@
-javascript / not updated since 6 years
-https://github.com/jovemnf/icinga-api
+# PRETIAC
 
-javascript / not updated since 5 years
-https://www.npmjs.com/package/icinga2-api
+PREtty Typed Icinga2 Api Client
 
-corresponding frontend
-https://github.com/jtejedera/icinga2_api_request
+## Similar projects 
 
-uses icinga2-api
-https://github.com/gyselroth/kube-icinga
+* [icinga-api](https://github.com/jovemnf/icinga-api): javascript / not updated since 6 years
+* [icinga2-api](https://www.npmjs.com/package/icinga2-api): javascript / not updated since 5 years
+* [icinga2_api_request](https://github.com/jtejedera/icinga2_api_request) corresponding frontend
+* [kube-icinga](https://github.com/gyselroth/kube-icinga): uses icinga2-api
+
+## TypeDoc
 
 https://typedoc.org/tags/group/
 
@@ -21,6 +22,8 @@ https://typedoc.org/tags/group/
  * @group runtime
  */
 ```
+
+## Typescript
 
 TypeScript function return type based on input parameter
 

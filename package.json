@@ -1,5 +1,6 @@
 {
-  "name": "icinga-api",
+  "name": "pretiac",
+  "description": "PREtty Typed Icinga2 Api Client",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/main.js",

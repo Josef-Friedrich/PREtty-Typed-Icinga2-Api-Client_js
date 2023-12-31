@@ -7,7 +7,6 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 import type {
   ServiceState,
   HostState,
-  ObjectType,
   MonitoringObjectName,
   ObjectByName
 } from './object-types.js'

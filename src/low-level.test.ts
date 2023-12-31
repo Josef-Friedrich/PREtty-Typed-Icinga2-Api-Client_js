@@ -53,7 +53,7 @@ describe('low-level-api.ts', () => {
         filter: 'host.display_name == "Host 1"'
       })
 
-      const host = objects[0] as any
+      const host = objects[0]
 
       expect(host.type).toBe('Host')
       expect(host.name).toBe('Host1')
@@ -65,7 +65,7 @@ describe('low-level-api.ts', () => {
         filter: 'service.name == "Service1"'
       })
 
-      const service = objects[0] as any
+      const service = objects[0]
 
       expect(service.type).toBe('Service')
       expect(service.name).toBe('Host1!Service1')
@@ -78,7 +78,7 @@ describe('low-level-api.ts', () => {
         attrs: ['display_name']
       })
 
-      const user = objetcs[0] as any
+      const user = objetcs[0]
 
       expect(user.type).toBe('User')
       expect(user.name).toBe('user2')
