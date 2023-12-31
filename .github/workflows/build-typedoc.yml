@@ -7,7 +7,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: Build-TypeDoc
-      uses: zakodium/typedoc-action@1.0.1
+      uses: zakodium/typedoc-action@2.8.0
       with:
         entry: 'src/main.ts'
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
