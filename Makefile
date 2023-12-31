@@ -31,5 +31,5 @@ test: set_test_config
 process_docs:
 	./resources/process-docs.mjs
 
-doc:
+doc: process_docs
 	npm run doc

@@ -419,8 +419,8 @@ export interface ApiUser extends ConfigObject {
  * }
  * ```
  *
- * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L65-L114
- * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti
+ * @see [doc/09-object-types.md L65-L114](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L65-L114)
+ * @see [lib/icinga/command.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti)
  */
 export interface CheckCommand {}
 
@@ -438,10 +438,59 @@ export interface CheckCommand {}
  *     }
  *   }
  * ```
- * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L117-L150
- * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti#L30-L46
+ * @see [doc/09-object-types.md L117-L150](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L117-L150)
+ * @see [lib/icinga/command.ti L30-L46](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti#L30-L46)
  */
 export interface CheckCommandArguments {}
+
+/*
+ * Dependency objects are used to specify dependencies between hosts and services. Dependencies
+ * can be defined as Host-to-Host, Service-to-Service, Service-to-Host, or Host-to-Service
+ * relations.
+ * 
+ * > **Best Practice**
+ * >
+ * > Rather than creating a `Dependency` object for a specific host or service it is usually easier
+ * > to just create a `Dependency` template and use the `apply` keyword to assign the
+ * > dependency to a number of hosts or services. Use the `to` keyword to set the specific target
+ * > type for `Host` or `Service`.
+ * > Check the [dependencies](03-monitoring-basics.md#dependencies) chapter for detailed examples.
+ * 
+ * Service-to-Service Example:
+ * 
+ * ```
+ * object Dependency "webserver-internet" {
+ *   parent_host_name = "internet"
+ *   parent_service_name = "ping4"
+ * 
+ *   child_host_name = "webserver"
+ *   child_service_name = "ping4"
+ * 
+ *   states = [ OK, Warning ]
+ * 
+ *   disable_checks = true
+ * }
+ * ```
+ * 
+ * Host-to-Host Example:
+ * 
+ * ```
+ * object Dependency "webserver-internet" {
+ *   parent_host_name = "internet"
+ * 
+ *   child_host_name = "webserver"
+ * 
+ *   states = [ Up ]
+ * 
+ *   disable_checks = true
+ * }
+ * ```
+ * 
+ * @see [doc/09-object-types.md L153-L258](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L153-L258)
+ */
+export interface Dependency {
+
+}
 
 /**
  * @see [lib/icinga/host.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti)
