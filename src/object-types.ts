@@ -7,7 +7,7 @@
 /**
  * @see [doc/09-object-types.md object-types-monitoring](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#object-types-monitoring)
  */
-export type MonitoringObject =
+export type MonitoringObjectTypeName =
   | 'ApiUser'
   | 'CheckCommand'
   | 'Dependency'
@@ -25,15 +25,29 @@ export type MonitoringObject =
   | 'UserGroup'
   | 'Zone'
 
+export type ImplementedMonitoringObjectTypeName =
+  | 'ApiUser'
+  | 'CheckCommand'
+  | 'CheckCommandArguments'
+  | 'Dependency'
+  | 'Endpoint'
+  | 'EventCommand'
+  | 'Host'
+  | 'HostGroup'
+  | 'Notification'
+  | 'NotificationCommand'
+  | 'Service'
+  | 'User'
+
 /**
  * @see [doc/09-object-types.md runtime-objects-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#runtime-objects-)
  */
-export type RuntimeObject = 'Comment' | 'Downtime'
+export type RuntimeObjectTypeName = 'Comment' | 'Downtime'
 
 /**
  * @see [doc/09-object-types.md features-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#features-)
  */
-export type Feature =
+export type FeatureObjectTypeName =
   | 'ApiListener'
   | 'CheckerComponent'
   | 'CompatLogger'
@@ -56,7 +70,10 @@ export type Feature =
   | 'SyslogLogger'
   | 'WindowsEventLogLogger'
 
-export type Object = MonitoringObject | RuntimeObject | Feature
+export type ObjectTypeName =
+  | MonitoringObjectTypeName
+  | RuntimeObjectTypeName
+  | FeatureObjectTypeName
 
 /***************************************************************************
  * Delegated interfaces and types
@@ -533,25 +550,25 @@ export interface Endpoint {}
  *
  * @see [doc/09-object-types.md L295-L320](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L295-L320)
  */
-interface EventCommand {}
+export interface EventCommand {}
 
 /**
  * A host.
- * 
+ *
  * @example
- * 
+ *
  * ```
  * object Host "icinga2-agent1.localdomain" {
  *   display_name = "Linux Client 1"
  *   address = "192.168.56.111"
  *   address6 = "2a00:1450:4001:815::2003"
- * 
+ *
  *   groups = [ "linux-servers" ]
- * 
+ *
  *   check_command = "hostalive"
  * }
  * ```
- * 
+ *
  * @see [doc/09-object-types.md L323-L413](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L323-L413)
  * @see [lib/icinga/host.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti)
  */
@@ -622,31 +639,29 @@ export interface Host extends Checkable {
 
 /**
  * A group of hosts.
- * 
+ *
  * > **Best Practice**
  * >
  * > Assign host group members using the [group assign](17-language-reference.md#group-assign) rules.
- * 
+ *
  * @example
- * 
+ *
  * ```
  * object HostGroup "linux-servers" {
  *   display_name = "Linux Servers"
- * 
+ *
  *   assign where host.vars.os == "Linux"
  * }
  * ```
- * 
+ *
  * @see [doc/09-object-types.md L417-L440](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L417-L440)
  */
-export interface HostGroup {
-
-}
+export interface HostGroup {}
 
 /**
  * Notification objects are used to specify how users should be notified in case
  * of host and service state changes and other events.
- * 
+ *
  * > **Best Practice**
  * >
  * > Rather than creating a `Notification` object for a specific host or service it is
@@ -654,38 +669,36 @@ export interface HostGroup {
  * > to assign the notification to a number of hosts or services. Use the `to` keyword
  * > to set the specific target type for `Host` or `Service`.
  * > Check the [notifications](03-monitoring-basics.md#alert-notifications) chapter for detailed examples.
- * 
+ *
  * Example:
- * 
+ *
  * ```
  * object Notification "localhost-ping-notification" {
  *   host_name = "localhost"
  *   service_name = "ping4"
- * 
+ *
  *   command = "mail-notification"
- * 
+ *
  *   users = [ "user1", "user2" ] // reference to User objects
- * 
+ *
  *   types = [ Problem, Recovery ]
  *   states = [ Critical, Warning, OK ]
  * }
  * ```
- * 
+ *
  * @see [doc/09-object-types.md L444-L527](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L444-L527)
  */
-export interface Notification {
-
-}
+export interface Notification {}
 
 /**
  * A notification command definition.
- * 
+ *
  * @example
- * 
+ *
  * ```
  * object NotificationCommand "mail-service-notification" {
  *   command = [ ConfigDir + "/scripts/mail-service-notification.sh" ]
- * 
+ *
  *   arguments += {
  *     "-4" = {
  *       required = true
@@ -737,7 +750,7 @@ export interface Notification {
  *     }
  *     "-v" = "$notification_logtosyslog$"
  *   }
- * 
+ *
  *   vars += {
  *     notification_address = "$address$"
  *     notification_address6 = "$address6$"
@@ -755,12 +768,10 @@ export interface Notification {
  *   }
  * }
  * ```
- * 
+ *
  * @see [doc/09-object-types.md L530-L622](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L530-L622)
  */
-export interface NotificationCommand {
-
-}
+export interface NotificationCommand {}
 
 /**
  * @see [lib/icinga/service.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti)
@@ -894,3 +905,17 @@ export interface User extends CustomVarObject {
    */
   last_notification: number
 }
+
+export type ObjectType =
+  | ApiUser
+  | CheckCommand
+  | CheckCommandArguments
+  | Dependency
+  | Endpoint
+  | EventCommand
+  | Host
+  | HostGroup
+  | Notification
+  | NotificationCommand
+  | Service
+  | User

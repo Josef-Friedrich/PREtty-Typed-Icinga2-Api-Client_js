@@ -1,6 +1,8 @@
 import { test, expect, describe } from 'vitest'
 
 import { queryObjects, createObject, deleteObject } from './low-level-api.js'
+import type { ObjectQueriesResult } from './low-level-api.js'
+import type { Service } from './object-types.js'
 
 import { getClient } from './client.js'
 import { debug } from './helper.test.js'
@@ -8,6 +10,35 @@ import { debug } from './helper.test.js'
 const client = getClient()
 describe('low-level-api.ts', () => {
   describe('function queryObjects()', () => {
+    describe('joins', () => {
+      test('with object type name: host', async () => {
+        const objects = (await queryObjects(client, 'Service', {
+          joins: ['host'],
+          filter: 'service.name == "Service1"'
+        })) as any
+
+        expect(objects[0].joins.host.__name).toBe('Host1')
+      })
+
+      test('with attribute: host.name', async () => {
+        const objects = (await queryObjects(client, 'Service', {
+          joins: ['host.name'],
+          filter: 'service.name == "Service1"'
+        })) as any
+
+        expect(objects[0].joins.host.name).toBe('Host1')
+      })
+
+      test('unknown object type', async () => {
+        const objects = (await queryObjects(client, 'Service', {
+          joins: ['xxx'],
+          filter: 'service.name == "Service1"'
+        })) as any
+
+        expect(objects[0].joins).toEqual({})
+      })
+    })
+
     test('ApiUser', async () => {
       const result = await queryObjects(client, 'ApiUser')
 
@@ -22,7 +53,7 @@ describe('low-level-api.ts', () => {
         filter: 'host.display_name == "Host 1"'
       })
 
-      const host = objects[0]
+      const host = objects[0] as any
 
       expect(host.type).toBe('Host')
       expect(host.name).toBe('Host1')
@@ -34,7 +65,7 @@ describe('low-level-api.ts', () => {
         filter: 'service.name == "Service1"'
       })
 
-      const service = objects[0]
+      const service = objects[0] as any
 
       expect(service.type).toBe('Service')
       expect(service.name).toBe('Host1!Service1')
@@ -47,7 +78,7 @@ describe('low-level-api.ts', () => {
         attrs: ['display_name']
       })
 
-      const user = objetcs[0]
+      const user = objetcs[0] as any
 
       expect(user.type).toBe('User')
       expect(user.name).toBe('user2')
@@ -77,9 +108,9 @@ describe('low-level-api.ts', () => {
       expect(createResult.code).toBe(200)
       expect(createResult.status).toBe('Object was created')
 
-      const hosts = await queryObjects(client, 'Host', {
+      const hosts = (await queryObjects(client, 'Host', {
         filter: 'host.name == "test-host"'
-      })
+      })) as any
 
       expect(hosts[0].attrs.display_name).toBe('Test Host')
 

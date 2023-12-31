@@ -4,7 +4,7 @@ import type { Client } from './client.js'
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-import type { Service, User, ServiceState, HostState } from './object-types.js'
+import type { ServiceState, HostState, ObjectType } from './object-types.js'
 
 /**
  * @see [doc/12-icinga2-api.md L581-L585](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L581-L585)
@@ -31,6 +31,46 @@ export interface QueryObjectsParams {
    * https://icinga.com/docs/icinga-2/latest/doc/12-icinga2-api/#filters
    */
   filter?: string
+}
+
+/**
+ * @see [doc/12-icinga2-api.md L620-L631](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L620-L631)
+ */
+export interface ObjectQueriesResult {
+  /**
+   * Full object name.
+   *
+   * @see [doc/12-icinga2-api.md L626](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L626)
+   */
+  name: string
+
+  /**
+   * Object type.
+   *
+   * @see [doc/12-icinga2-api.md L627](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L627)
+   */
+  type: string
+
+  /**
+   * Object attributes (can be filtered using the URL parameter `attrs`).
+   *
+   * @see [doc/12-icinga2-api.md L628](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L628)
+   */
+  attrs: ObjectType
+
+  /**
+   * [Joined object types](12-icinga2-api.md#icinga2-api-config-objects-query-joins) as key, attributes as nested dictionary. Disabled by default.
+   *
+   * @see [doc/12-icinga2-api.md L629](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L629)
+   */
+  joins: Record<string, ObjectType>
+
+  /**
+   * Contains `used_by` object references. Disabled by default, enable it using `?meta=used_by` as URL parameter.
+   *
+   * @see [doc/12-icinga2-api.md L630](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L630)
+   */
+  meta: Record<string, any>
 }
 
 export async function queryObjects(
@@ -136,46 +176,6 @@ export interface ProcessCheckResultParams {
 export interface ProcessCheckResult {
   code: number
   status: string
-}
-
-/**
- * @see [doc/12-icinga2-api.md L620-L631](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L620-L631)
- */
-export interface ObjectQueriesResult {
-  /**
-   * Full object name.
-   *
-   * @see [doc/12-icinga2-api.md L626](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L626)
-   */
-  name: string
-
-  /**
-   * Object type.
-   *
-   * @see [doc/12-icinga2-api.md L627](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L627)
-   */
-  type: string
-
-  /**
-   * Object attributes (can be filtered using the URL parameter `attrs`).
-   *
-   * @see [doc/12-icinga2-api.md L628](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L628)
-   */
-  attrs: User | Service
-
-  /**
-   * [Joined object types](12-icinga2-api.md#icinga2-api-config-objects-query-joins) as key, attributes as nested dictionary. Disabled by default.
-   *
-   * @see [doc/12-icinga2-api.md L629](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L629)
-   */
-  joins: Record<string, User | Service>
-
-  /**
-   * Contains `used_by` object references. Disabled by default, enable it using `?meta=used_by` as URL parameter.
-   *
-   * @see [doc/12-icinga2-api.md L630](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L630)
-   */
-  meta: Record<string, any>
 }
 
 /**

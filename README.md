@@ -21,3 +21,43 @@ https://typedoc.org/tags/group/
  * @group runtime
  */
 ```
+
+TypeScript function return type based on input parameter
+
+https://stackoverflow.com/a/54166010
+
+
+```ts
+interface Circle {
+  type: 'circle'
+  radius: number
+}
+
+interface Square {
+  type: 'square'
+  length: number
+}
+
+type TypeName = 'circle' | 'square'
+
+type ObjectTyp<T> = T extends 'circle'
+  ? Circle
+  : T extends 'square'
+  ? Square
+  : never
+
+const shapes: (Circle | Square)[] = [
+  { type: 'circle', radius: 1 },
+  { type: 'circle', radius: 2 },
+  { type: 'square', length: 10 }
+]
+
+function getItems<T extends TypeName>(type: T): ObjectTyp<T>[] {
+  return shapes.filter((s) => s.type == type) as ObjectTyp<T>[]
+}
+
+const circles = getItems('circle')
+for (const circle of circles) {
+  console.log(circle.length)
+}
+```
