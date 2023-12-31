@@ -1,7 +1,7 @@
 import { getClient } from './client.js'
-import * as api from './low-level-api.js'
-
 import type { ProcessCheckResult } from './low-level-api.js'
+import * as api from './low-level-api.js'
+import type { ServiceState } from './object-types.js'
 
 const client = getClient()
 
@@ -29,7 +29,7 @@ export interface MonitoringService {
   /**
    * @example 0
    */
-  state: api.ServiceState
+  state: ServiceState
 
   /**
    * @example "APT OK: 0 packages available for upgrade (0 critical updates)."
@@ -38,7 +38,7 @@ export interface MonitoringService {
 }
 
 export async function getServices(
-  state?: api.ServiceState
+  state?: ServiceState
 ): Promise<MonitoringService[]> {
   const results = await client.request('objects/services', 'GET', {
     attrs: ['name', 'state', 'last_check_result'],
@@ -65,7 +65,7 @@ export async function getServices(
 export async function sendServiceCheckResult(
   hostName: string,
   serviceName: string,
-  status: api.ServiceState,
+  status: ServiceState,
   pluginOutput: string
 ): Promise<ProcessCheckResult> {
   return await api.processCheckResult(client, {

@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 
-import { State } from './low-level-api.js'
+import type { State } from './object-types.js'
 
 interface CheckResult {
   status: State

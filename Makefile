@@ -1,4 +1,4 @@
-all: build debug
+all: build test
 
 build:
 	npm run build
@@ -30,3 +30,6 @@ test: set_test_config
 
 process_docs:
 	./resources/process-docs.mjs
+
+doc:
+	npm run doc

@@ -4,7 +4,7 @@ import type { HttpMethod } from './low-level-api.js'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-interface Config {
+export interface Config {
   domain: string
 
   user: string
@@ -14,7 +14,7 @@ interface Config {
   port: number
 }
 
-function readConfig(): Config {
+export function readConfig(): Config {
   return JSON.parse(
     fs.readFileSync('/etc/icinga2-api-client.json', { encoding: 'utf-8' })
   )
@@ -73,14 +73,18 @@ export class Client {
     }
 
     // Successful requests will send back a response body containing a results list.
-    if (body.results.length === 1 && config.returnSingleResult) {
+    if (
+      body.results != null &&
+      body.results.length === 1 &&
+      config.returnSingleResult
+    ) {
       return body.results[0]
     }
     return body.results
   }
 }
 
-interface RequestConfig {
+export interface RequestConfig {
   throwError?: boolean
   /**
    * Return a single result as a single item rather than a list.
