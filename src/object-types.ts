@@ -7,9 +7,10 @@
 /**
  * @see [doc/09-object-types.md object-types-monitoring](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#object-types-monitoring)
  */
-export type MonitoringObjectTypeName =
+export type MonitoringObjectName =
   | 'ApiUser'
   | 'CheckCommand'
+  | 'CheckCommandArguments'
   | 'Dependency'
   | 'Endpoint'
   | 'EventCommand'
@@ -25,29 +26,15 @@ export type MonitoringObjectTypeName =
   | 'UserGroup'
   | 'Zone'
 
-export type ImplementedMonitoringObjectTypeName =
-  | 'ApiUser'
-  | 'CheckCommand'
-  | 'CheckCommandArguments'
-  | 'Dependency'
-  | 'Endpoint'
-  | 'EventCommand'
-  | 'Host'
-  | 'HostGroup'
-  | 'Notification'
-  | 'NotificationCommand'
-  | 'Service'
-  | 'User'
-
 /**
  * @see [doc/09-object-types.md runtime-objects-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#runtime-objects-)
  */
-export type RuntimeObjectTypeName = 'Comment' | 'Downtime'
+export type RuntimeObjectName = 'Comment' | 'Downtime'
 
 /**
  * @see [doc/09-object-types.md features-](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md#features-)
  */
-export type FeatureObjectTypeName =
+export type FeatureObjectName =
   | 'ApiListener'
   | 'CheckerComponent'
   | 'CompatLogger'
@@ -71,9 +58,9 @@ export type FeatureObjectTypeName =
   | 'WindowsEventLogLogger'
 
 export type ObjectTypeName =
-  | MonitoringObjectTypeName
-  | RuntimeObjectTypeName
-  | FeatureObjectTypeName
+  | MonitoringObjectName
+  | RuntimeObjectName
+  | FeatureObjectName
 
 /***************************************************************************
  * Delegated interfaces and types
@@ -773,6 +760,8 @@ export interface Notification {}
  */
 export interface NotificationCommand {}
 
+export interface ScheduledDowntime {}
+
 /**
  * @see [lib/icinga/service.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti)
  */
@@ -828,6 +817,10 @@ export interface Service extends Checkable {
    */
   last_state_unknown: TimeStamp
 }
+
+export interface ServiceGroup {}
+
+export interface TimePeriod {}
 
 /**
  * @see [lib/icinga/user.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti)
@@ -906,6 +899,9 @@ export interface User extends CustomVarObject {
   last_notification: number
 }
 
+export interface UserGroup {}
+export interface Zone {}
+
 export type ObjectType =
   | ApiUser
   | CheckCommand
@@ -919,3 +915,39 @@ export type ObjectType =
   | NotificationCommand
   | Service
   | User
+
+export type ObjectByName<T> = T extends 'ApiUser'
+  ? ApiUser
+  : T extends 'CheckCommand'
+  ? CheckCommand
+  : T extends 'CheckCommandArguments'
+  ? CheckCommandArguments
+  : T extends 'Dependency'
+  ? Dependency
+  : T extends 'Endpoint'
+  ? Endpoint
+  : T extends 'EventCommand'
+  ? EventCommand
+  : T extends 'Host'
+  ? Host
+  : T extends 'HostGroup'
+  ? HostGroup
+  : T extends 'Notification'
+  ? Notification
+  : T extends 'NotificationCommand'
+  ? NotificationCommand
+  : T extends 'ScheduledDowntime'
+  ? ScheduledDowntime
+  : T extends 'Service'
+  ? Service
+  : T extends 'ServiceGroup'
+  ? ServiceGroup
+  : T extends 'TimePeriod'
+  ? TimePeriod
+  : T extends 'User'
+  ? User
+  : T extends 'UserGroup'
+  ? UserGroup
+  : T extends 'Zone'
+  ? Zone
+  : never

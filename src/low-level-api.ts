@@ -4,7 +4,13 @@ import type { Client } from './client.js'
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-import type { ServiceState, HostState, ObjectType } from './object-types.js'
+import type {
+  ServiceState,
+  HostState,
+  ObjectType,
+  MonitoringObjectName,
+  ObjectByName
+} from './object-types.js'
 
 /**
  * @see [doc/12-icinga2-api.md L581-L585](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L581-L585)
@@ -36,7 +42,7 @@ export interface QueryObjectsParams {
 /**
  * @see [doc/12-icinga2-api.md L620-L631](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L620-L631)
  */
-export interface ObjectQueriesResult {
+export interface ObjectQueriesResult<ObjectName, ObjectType> {
   /**
    * Full object name.
    *
@@ -49,7 +55,7 @@ export interface ObjectQueriesResult {
    *
    * @see [doc/12-icinga2-api.md L627](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L627)
    */
-  type: string
+  type: ObjectName
 
   /**
    * Object attributes (can be filtered using the URL parameter `attrs`).
@@ -73,12 +79,12 @@ export interface ObjectQueriesResult {
   meta: Record<string, any>
 }
 
-export async function queryObjects(
+export async function queryObjects<T extends MonitoringObjectName>(
   client: Client,
-  object: Object,
+  objectName: T,
   params: QueryObjectsParams = {}
-): Promise<ObjectQueriesResult[]> {
-  return await client.request(`objects/${object}s`, 'GET', params, {
+): Promise<ObjectQueriesResult<T, ObjectByName<T>>[]> {
+  return await client.request(`objects/${objectName}s`, 'GET', params, {
     returnSingleResult: false
   })
 }
