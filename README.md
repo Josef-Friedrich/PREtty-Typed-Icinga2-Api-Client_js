@@ -29,7 +29,6 @@ TypeScript function return type based on input parameter
 
 https://stackoverflow.com/a/54166010
 
-
 ```ts
 interface Circle {
   type: 'circle'
