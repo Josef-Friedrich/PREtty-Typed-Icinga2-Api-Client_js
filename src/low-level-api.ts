@@ -64,11 +64,51 @@ export interface ObjectQueriesResult<ObjectName, ObjectType> {
   attrs: ObjectType
 
   /**
+   * Icinga 2 knows about object relations. For example it can optionally return
+   * information about the host when querying service objects.
+   *
+   * The following query retrieves all host attributes:
+   *
+   * ```
+   * https://localhost:5665/v1/objects/services?joins=host
+   * ```
+   *
+   * Instead of requesting all host attributes you can also limit the output to specific
+   * attributes:
+   *
+   * ```
+   * https://localhost:5665/v1/objects/services?joins=host.name&joins=host.address
+   * ```
+   *
+   * You can request that all available joins are returned in the result set by using
+   * the `all_joins` query parameter.
+   *
+   * ```
+   * https://localhost:5665/v1/objects/services?all_joins=1
+   * ```
+   *
+   * > **Note**
+   * >
+   * > For performance reasons you should only request attributes which your application
+   * > requires.
+   *
+   * Please note that the object type refers to the URL endpoint with `/v1/objects/<object type>`
+   * where the following joins are available:
+   *
+   *   Object Type  | Object Relations (`joins` prefix name)
+   *   -------------|------------------------------------------
+   *   Service      | host, check\_command, check\_period, event\_command, command\_endpoint
+   *   Host         | check\_command, check\_period, event\_command, command\_endpoint
+   *   Notification | host, service, command, period
+   *   Dependency   | child\_host, child\_service, parent\_host, parent\_service, period
+   *   User         | period
+   *   Zones        | parent
+   *
    * [Joined object types](12-icinga2-api.md#icinga2-api-config-objects-query-joins) as key, attributes as nested dictionary. Disabled by default.
    *
    * @see [doc/12-icinga2-api.md L629](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/12-icinga2-api.md?plain=1#L629)
    */
-  joins: Record<string, ObjectType>
+  joins: Record<string, any>
 
   /**
    * Contains `used_by` object references. Disabled by default, enable it using `?meta=used_by` as URL parameter.
@@ -86,6 +126,16 @@ export async function queryObjects<T extends MonitoringObjectName>(
   return await client.request(`objects/${objectName}s`, 'GET', params, {
     returnSingleResult: false
   })
+}
+
+function makeObjectPrettier<T extends MonitoringObjectName>(
+  object: ObjectQueriesResult<T, ObjectByName<T>>
+): ObjectByName<T> {
+  const prettyObject = object.attrs
+  // if ('__name' in object.attrs && object.attrs.__name != null) {
+  //   delete object.attrs.__name
+  // }
+  return prettyObject
 }
 
 export interface Attrs {

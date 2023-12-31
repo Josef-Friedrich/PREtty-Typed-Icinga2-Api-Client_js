@@ -1,39 +1,48 @@
 import { test, expect, describe } from 'vitest'
 
 import { queryObjects, createObject, deleteObject } from './low-level-api.js'
-import type { ObjectQueriesResult } from './low-level-api.js'
-import type { Service } from './object-types.js'
 
 import { getClient } from './client.js'
 import { debug } from './helper.test.js'
 
 const client = getClient()
+
 describe('low-level-api.ts', () => {
   describe('function queryObjects()', () => {
     describe('joins', () => {
       test('with object type name: host', async () => {
-        const objects = (await queryObjects(client, 'Service', {
+        const objects = await queryObjects(client, 'Service', {
           joins: ['host'],
           filter: 'service.name == "Service1"'
-        })) as any
+        })
 
         expect(objects[0].joins.host.__name).toBe('Host1')
       })
 
       test('with attribute: host.name', async () => {
-        const objects = (await queryObjects(client, 'Service', {
+        const objects = await queryObjects(client, 'Service', {
           joins: ['host.name'],
           filter: 'service.name == "Service1"'
-        })) as any
+        })
 
         expect(objects[0].joins.host.name).toBe('Host1')
       })
 
+      test('with attribute: check_command.name', async () => {
+        const objects = await queryObjects(client, 'Service', {
+          joins: ['check_command.name']
+        })
+
+        for (const service of objects) {
+          expect(service.joins.check_command.name).toBeTypeOf('string')
+        }
+      })
+
       test('unknown object type', async () => {
-        const objects = (await queryObjects(client, 'Service', {
+        const objects = await queryObjects(client, 'Service', {
           joins: ['xxx'],
           filter: 'service.name == "Service1"'
-        })) as any
+        })
 
         expect(objects[0].joins).toEqual({})
       })

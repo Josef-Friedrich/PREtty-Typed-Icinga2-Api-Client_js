@@ -210,6 +210,8 @@ interface Checkable extends CustomVarObject {
   /**
    * The name of the check command.
    *
+   * @group navigation
+   *
    * @see [doc/09-object-types.md L717](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L717)
    */
   check_command: string
@@ -223,6 +225,8 @@ interface Checkable extends CustomVarObject {
 
   /**
    * The name of a time period which determines when this service should be checked. Not set by default (effectively 24x7).
+   *
+   * @group navigation
    *
    * @see [doc/09-object-types.md L719](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L719)
    */
@@ -247,6 +251,9 @@ interface Checkable extends CustomVarObject {
    */
   retry_interval: number
 
+  /**
+   * @group navigation
+   */
   event_command: string
 
   volatile: boolean
@@ -332,9 +339,23 @@ interface Checkable extends CustomVarObject {
 
   flapping: boolean
 
+  /**
+   * @group navigation
+   */
   command_endpoint: string
 
   executions: Dictionary
+}
+
+export interface CheckableWithRelations
+  extends Omit<
+    Checkable,
+    'check_command' | 'check_period' | 'event_command' | 'command_endpoint'
+  > {
+  check_command?: CheckCommand
+  check_period?: TimePeriod
+  event_command?: EventCommand
+  command_endpoint?: Endpoint
 }
 
 /***************************************************************************
@@ -780,7 +801,11 @@ export interface Service extends Checkable {
    * The host this service belongs to. There must be a `Host` object with that name.
    */
   host_name: string
-  host: Host
+
+  /**
+   * @group navigation
+   */
+  host?: Host
 
   /**
    * The current state (0 = OK, 1 = WARNING, 2 = CRITICAL, 3 = UNKNOWN).

@@ -13,13 +13,27 @@
 
 https://typedoc.org/tags/group/
 
+Configuration attributes
+
 ```ts
 /**
  * @group config
  */
+```
 
+Runtime attributes
+
+```ts
 /**
  * @group runtime
+ */
+```
+
+Attributes that represent object relationships. The objects are linked via joins.
+ 
+```ts
+/**
+ * @group navigation
  */
 ```
 
