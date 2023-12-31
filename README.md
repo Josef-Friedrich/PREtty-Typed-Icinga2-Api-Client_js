@@ -9,3 +9,15 @@ https://github.com/jtejedera/icinga2_api_request
 
 uses icinga2-api
 https://github.com/gyselroth/kube-icinga
+
+https://typedoc.org/tags/group/
+
+```ts
+/**
+ * @group config
+ */
+
+/**
+ * @group runtime
+ */
+```

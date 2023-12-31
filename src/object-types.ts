@@ -128,7 +128,6 @@ export enum HostState {
 
 export interface CheckResult {}
 
-
 /***************************************************************************
  * Interface from which the object types inherit
  **************************************************************************/
@@ -339,6 +338,17 @@ interface Checkable extends CustomVarObject {
  **************************************************************************/
 
 /**
+ * ApiUser objects are used for authentication against the [Icinga 2 API](12-icinga2-api.md#icinga2-api-authentication).
+ *
+ * @example
+ *
+ * ```
+ * object ApiUser "root" {
+ *   password = "mysecretapipassword"
+ *   permissions = [ "*" ]
+ * }
+ * ```
+ *
  * @see [lib/remote/apiuser.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti)
  * @see [doc/09-object-types.md L41-L63](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L41-L63)
  */
@@ -346,6 +356,7 @@ export interface ApiUser extends ConfigObject {
   /**
    * Password string. Note: This attribute is hidden in API responses.
    *
+   * @group config
    * @see [lib/remote/apiuser.ti L14](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L14)
    */
   password?: string
@@ -353,6 +364,7 @@ export interface ApiUser extends ConfigObject {
   /**
    * Client Common Name (CN).
    *
+   * @group config
    * @see [lib/remote/apiuser.ti L16](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L16)
    */
   client_cn?: string
@@ -360,11 +372,76 @@ export interface ApiUser extends ConfigObject {
   /**
    * Array of permissions. Either as string or dictionary with the keys `permission` and `filter`. The latter must be specified as function.
    *
+   * @group config
    * @see [lib/remote/apiuser.ti L17](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L17)
    * @see [lib/remote/apiuser.ti L21-L28](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti#L21-L28)
    */
   permissions: string[]
 }
+
+/**
+ * A check command definition. Additional default command custom variables can be
+ * defined here.
+ *
+ * Example:
+ *
+ * ```
+ * object CheckCommand "http" {
+ *   command = [ PluginDir + "/check_http" ]
+ *
+ *   arguments = {
+ *     "-H" = "$http_vhost$"
+ *     "-I" = "$http_address$"
+ *     "-u" = "$http_uri$"
+ *     "-p" = "$http_port$"
+ *     "-S" = {
+ *       set_if = "$http_ssl$"
+ *     }
+ *     "--sni" = {
+ *       set_if = "$http_sni$"
+ *     }
+ *     "-a" = {
+ *       value = "$http_auth_pair$"
+ *       description = "Username:password on sites with basic authentication"
+ *     }
+ *     "--no-body" = {
+ *       set_if = "$http_ignore_body$"
+ *     }
+ *     "-r" = "$http_expect_body_regex$"
+ *     "-w" = "$http_warn_time$"
+ *     "-c" = "$http_critical_time$"
+ *     "-e" = "$http_expect$"
+ *   }
+ *
+ *   vars.http_address = "$address$"
+ *   vars.http_ssl = false
+ *   vars.http_sni = false
+ * }
+ * ```
+ *
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L65-L114
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti
+ */
+export interface CheckCommand {}
+
+/**
+ *
+ * Command arguments can be defined as key-value-pairs in the `arguments`
+ * dictionary. Best practice is to assign a dictionary as value which
+ * provides additional details such as the `description` next to the `value`.
+ *
+ * ```
+ *   arguments = {
+ *     "--parameter" = {
+ *       description = "..."
+ *       value = "..."
+ *     }
+ *   }
+ * ```
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L117-L150
+ * https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti#L30-L46
+ */
+export interface CheckCommandArguments {}
 
 /**
  * @see [lib/icinga/host.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti)
