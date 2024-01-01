@@ -362,6 +362,10 @@ export interface CheckableWithRelations
  * The individual object types
  **************************************************************************/
 
+/***************************************************************************
+ * Monitoring Objects
+ **************************************************************************/
+
 /**
  * ApiUser objects are used for authentication against the [Icinga 2 API](12-icinga2-api.md#icinga2-api-authentication).
  *
@@ -373,6 +377,9 @@ export interface CheckableWithRelations
  *   permissions = [ "*" ]
  * }
  * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
  *
  * @see [lib/remote/apiuser.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/remote/apiuser.ti)
  * @see [doc/09-object-types.md L41-L63](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L41-L63)
@@ -444,6 +451,9 @@ export interface ApiUser extends ConfigObject {
  * }
  * ```
  *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L65-L114](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L65-L114)
  * @see [lib/icinga/command.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti)
  */
@@ -465,6 +475,10 @@ export interface CheckCommand {}
  *     }
  *   }
  * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L117-L150](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L117-L150)
  * @see [lib/icinga/command.ti L30-L46](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/command.ti#L30-L46)
  */
@@ -513,6 +527,9 @@ export interface CheckCommandArguments {}
  * }
  * ```
  *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L153-L258](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L153-L258)
  */
 export interface Dependency {}
@@ -541,6 +558,9 @@ export interface Dependency {}
  * }
  * ```
  *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L260-L293](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L260-L293)
  */
 export interface Endpoint {}
@@ -555,6 +575,9 @@ export interface Endpoint {}
  *   command = "/opt/bin/restart-httpd.sh"
  * }
  * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
  *
  * @see [doc/09-object-types.md L295-L320](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L295-L320)
  */
@@ -576,6 +599,9 @@ export interface EventCommand {}
  *   check_command = "hostalive"
  * }
  * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
  *
  * @see [doc/09-object-types.md L323-L413](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L323-L413)
  * @see [lib/icinga/host.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/host.ti)
@@ -662,6 +688,9 @@ export interface Host extends Checkable {
  * }
  * ```
  *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L417-L440](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L417-L440)
  */
 export interface HostGroup {}
@@ -693,6 +722,9 @@ export interface HostGroup {}
  *   states = [ Critical, Warning, OK ]
  * }
  * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
  *
  * @see [doc/09-object-types.md L444-L527](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L444-L527)
  */
@@ -777,14 +809,86 @@ export interface Notification {}
  * }
  * ```
  *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [doc/09-object-types.md L530-L622](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L530-L622)
  */
 export interface NotificationCommand {}
 
+/**
+ * ScheduledDowntime objects can be used to set up recurring downtimes for hosts/services.
+ *
+ * > **Best Practice**
+ * >
+ * > Rather than creating a `ScheduledDowntime` object for a specific host or service it is usually easier
+ * > to just create a `ScheduledDowntime` template and use the `apply` keyword to assign the
+ * > scheduled downtime to a number of hosts or services. Use the `to` keyword to set the specific target
+ * > type for `Host` or `Service`.
+ * > Check the [recurring downtimes](08-advanced-topics.md#recurring-downtimes) example for details.
+ *
+ * Example:
+ *
+ * ```
+ * object ScheduledDowntime "some-downtime" {
+ *   host_name = "localhost"
+ *   service_name = "ping4"
+ *
+ *   author = "icingaadmin"
+ *   comment = "Some comment"
+ *
+ *   fixed = false
+ *   duration = 30m
+ *
+ *   ranges = {
+ *     "sunday" = "02:00-03:00"
+ *   }
+ * }
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
+ * @see [doc/09-object-types.md L624-L674](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L624-L674)
+ */
 export interface ScheduledDowntime {}
 
 /**
+ * Service objects describe network services and how they should be checked
+ * by Icinga 2.
+ *
+ * > **Best Practice**
+ * >
+ * > Rather than creating a `Service` object for a specific host it is usually easier
+ * > to just create a `Service` template and use the `apply` keyword to assign the
+ * > service to a number of hosts.
+ * > Check the [apply](03-monitoring-basics.md#using-apply) chapter for details.
+ *
+ * Example:
+ *
+ * ```
+ * object Service "uptime" {
+ *   host_name = "localhost"
+ *
+ *   display_name = "localhost Uptime"
+ *
+ *   check_command = "snmp"
+ *
+ *   vars.snmp_community = "public"
+ *   vars.snmp_oid = "DISMAN-EVENT-MIB::sysUpTimeInstance"
+ *
+ *   check_interval = 60s
+ *   retry_interval = 15s
+ *
+ *   groups = [ "all-services", "snmp" ]
+ * }
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [lib/icinga/service.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/service.ti)
+ * @see [doc/09-object-types.md L677-L781](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L677-L781)
  */
 export interface Service extends Checkable {
   /**
@@ -843,12 +947,128 @@ export interface Service extends Checkable {
   last_state_unknown: TimeStamp
 }
 
+/**
+ * A group of services.
+ *
+ * > **Best Practice**
+ * >
+ * > Assign service group members using the [group assign](17-language-reference.md#group-assign) rules.
+ *
+ * Example:
+ *
+ * ```
+ * object ServiceGroup "snmp" {
+ *   display_name = "SNMP services"
+ * }
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
+ * @see [doc/09-object-types.md L784-L805](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L784-L805)
+ */
 export interface ServiceGroup {}
 
+/**
+ * Time periods can be used to specify when hosts/services should be checked or to limit
+ * when notifications should be sent out.
+ *
+ * Examples:
+ *
+ * ```
+ * object TimePeriod "nonworkhours" {
+ *   display_name = "Icinga 2 TimePeriod for non working hours"
+ *
+ *   ranges = {
+ *     monday = "00:00-8:00,17:00-24:00"
+ *     tuesday = "00:00-8:00,17:00-24:00"
+ *     wednesday = "00:00-8:00,17:00-24:00"
+ *     thursday = "00:00-8:00,17:00-24:00"
+ *     friday = "00:00-8:00,16:00-24:00"
+ *     saturday = "00:00-24:00"
+ *     sunday = "00:00-24:00"
+ *   }
+ * }
+ *
+ * object TimePeriod "exampledays" {
+ *     display_name = "Icinga 2 TimePeriod for random example days"
+ *
+ *     ranges = {
+ *         //We still believe in Santa, no peeking!
+ *         //Applies every 25th of December every year
+ *         "december 25" = "00:00-24:00"
+ *
+ *         //Any point in time can be specified,
+ *         //but you still have to use a range
+ *         "2038-01-19" = "03:13-03:15"
+ *
+ *         //Evey 3rd day from the second monday of February
+ *         //to 8th of November
+ *         "monday 2 february - november 8 / 3" = "00:00-24:00"
+ *     }
+ * }
+ * ```
+ *
+ * Additional examples can be found [here](08-advanced-topics.md#timeperiods).
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
+ * @see [doc/09-object-types.md L809-L869](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L809-L869)
+ */
 export interface TimePeriod {}
 
 /**
+ * A user.
+ *
+ * Example:
+ *
+ * ```
+ * object User "icingaadmin" {
+ *   display_name = "Icinga 2 Admin"
+ *   groups = [ "icingaadmins" ]
+ *   email = "icinga@localhost"
+ *   pager = "icingaadmin@localhost.localdomain"
+ *
+ *   period = "24x7"
+ *
+ *   states = [ OK, Warning, Critical, Unknown ]
+ *   types = [ Problem, Recovery ]
+ *
+ *   vars.additional_notes = "This is the Icinga 2 Admin account."
+ * }
+ * ```
+ *
+ * Available notification state filters:
+ *
+ * ```
+ * OK
+ * Warning
+ * Critical
+ * Unknown
+ * Up
+ * Down
+ * ```
+ *
+ * Available notification type filters:
+ *
+ * ```
+ * DowntimeStart
+ * DowntimeEnd
+ * DowntimeRemoved
+ * Custom
+ * Acknowledgement
+ * Problem
+ * Recovery
+ * FlappingStart
+ * FlappingEnd
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
  * @see [lib/icinga/user.ti](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/lib/icinga/user.ti)
+ * @see [doc/09-object-types.md L872-L937](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L872-L937)
  */
 export interface User extends CustomVarObject {
   /**
@@ -924,10 +1144,200 @@ export interface User extends CustomVarObject {
   last_notification: number
 }
 
+/**
+ * A user group.
+ *
+ * > **Best Practice**
+ * >
+ * > Assign user group members using the [group assign](17-language-reference.md#group-assign) rules.
+ *
+ * Example:
+ *
+ * ```
+ * object UserGroup "icingaadmins" {
+ *     display_name = "Icinga 2 Admin Group"
+ * }
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
+ * @see [doc/09-object-types.md L939-L960](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L939-L960)
+ */
 export interface UserGroup {}
+
+/**
+ * Zone objects are used to specify which Icinga 2 instances are located in a zone.
+ * Please read the [distributed monitoring chapter](06-distributed-monitoring.md#distributed-monitoring) for additional details.
+ * Example:
+ *
+ * ```
+ * object Zone "master" {
+ *   endpoints = [ "icinga2-master1.localdomain", "icinga2-master2.localdomain" ]
+ *
+ * }
+ *
+ * object Zone "satellite" {
+ *   endpoints = [ "icinga2-satellite1.localdomain" ]
+ *   parent = "master"
+ * }
+ * ```
+ *
+ * @category Object type
+ * @category Monitoring object type
+ *
+ * @see [doc/09-object-types.md L963-L989](https://github.com/Icinga/icinga2/blob/2c9117b4f71e00b2072e7dbe6c4ea4e48c882a87/doc/09-object-types.md?plain=1#L963-L989)
+ */
 export interface Zone {}
 
+/***************************************************************************
+ * Runtime Objects
+ **************************************************************************/
+
+/**
+ * @category Object type
+ * @category Runtime object type
+ */
+export interface Comment {}
+
+/**
+ * @category Object type
+ * @category Runtime object type
+ */
+export interface Downtime {}
+
+/***************************************************************************
+ * Features
+ **************************************************************************/
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface ApiListener {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface CheckerComponent {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface CompatLogger {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface ElasticsearchWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface ExternalCommandListener {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface FileLogger {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface GelfWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface GraphiteWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface IcingaApplication {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface IcingaDB {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface IdoMySqlConnection {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface IdoPgsqlConnection {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface InfluxdbWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface Influxdb2Writer {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface JournaldLogger {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface LiveStatusListener {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface NotificationComponent {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface OpenTsdbWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface PerfdataWriter {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface SyslogLogger {}
+
+/**
+ * @category Object type
+ * @category Feature object type
+ */
+export interface WindowsEventLogLogger {}
+
 export type ObjectType =
+  // Monitoring
   | ApiUser
   | CheckCommand
   | CheckCommandArguments
@@ -938,8 +1348,37 @@ export type ObjectType =
   | HostGroup
   | Notification
   | NotificationCommand
+  | ScheduledDowntime
   | Service
+  | ServiceGroup
   | User
+  | UserGroup
+  | Zone
+  // Runtime
+  | Comment
+  | Downtime
+  // Feature
+  | ApiListener
+  | CheckerComponent
+  | CompatLogger
+  | ElasticsearchWriter
+  | ExternalCommandListener
+  | FileLogger
+  | GelfWriter
+  | GraphiteWriter
+  | IcingaApplication
+  | IcingaDB
+  | IdoMySqlConnection
+  | IdoPgsqlConnection
+  | InfluxdbWriter
+  | Influxdb2Writer
+  | JournaldLogger
+  | LiveStatusListener
+  | NotificationComponent
+  | OpenTsdbWriter
+  | PerfdataWriter
+  | SyslogLogger
+  | WindowsEventLogLogger
 
 export type ObjectByName<T> = T extends 'ApiUser'
   ? ApiUser
@@ -975,4 +1414,52 @@ export type ObjectByName<T> = T extends 'ApiUser'
   ? UserGroup
   : T extends 'Zone'
   ? Zone
+  : // Runtime
+  T extends 'Comment'
+  ? Comment
+  : T extends 'Downtime'
+  ? Downtime
+  : // Feature
+  T extends 'ApiListener'
+  ? ApiListener
+  : T extends 'CheckerComponent'
+  ? CheckerComponent
+  : T extends 'CompatLogger'
+  ? CompatLogger
+  : T extends 'ElasticsearchWriter'
+  ? ElasticsearchWriter
+  : T extends 'ExternalCommandListener'
+  ? ExternalCommandListener
+  : T extends 'FileLogger'
+  ? FileLogger
+  : T extends 'GelfWriter'
+  ? GelfWriter
+  : T extends 'GraphiteWriter'
+  ? GraphiteWriter
+  : T extends 'IcingaApplication'
+  ? IcingaApplication
+  : T extends 'IcingaDB'
+  ? IcingaDB
+  : T extends 'IdoMySqlConnection'
+  ? IdoMySqlConnection
+  : T extends 'IdoPgsqlConnection'
+  ? IdoPgsqlConnection
+  : T extends 'InfluxdbWriter'
+  ? InfluxdbWriter
+  : T extends 'Influxdb2Writer'
+  ? Influxdb2Writer
+  : T extends 'JournaldLogger'
+  ? JournaldLogger
+  : T extends 'LiveStatusListener'
+  ? LiveStatusListener
+  : T extends 'NotificationComponent'
+  ? NotificationComponent
+  : T extends 'OpenTsdbWriter'
+  ? OpenTsdbWriter
+  : T extends 'PerfdataWriter'
+  ? PerfdataWriter
+  : T extends 'SyslogLogger'
+  ? SyslogLogger
+  : T extends 'WindowsEventLogLogger'
+  ? WindowsEventLogLogger
   : never
