@@ -9,6 +9,8 @@
 * [icinga2_api_request](https://github.com/jtejedera/icinga2_api_request) corresponding frontend
 * [kube-icinga](https://github.com/gyselroth/kube-icinga): uses icinga2-api
 
+https://github.com/adedomin/perfdata-parser
+
 ## TypeDoc
 
 https://typedoc.org/tags/group/

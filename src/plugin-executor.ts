@@ -1,10 +1,35 @@
-import { spawn } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 
 import type { State } from './object-types.js'
 
 interface CheckResult {
   status: State
   output: string
+}
+
+function isState(state?: any) {
+  return (
+    typeof state === 'number' &&
+    (state === 0 || state === 1 || state === 2 || state === 3)
+  )
+}
+
+function validateState(state?: any): State {
+  if (isState(state)) {
+    return state
+  }
+  throw new Error(`Unknown state ${state}`)
+}
+
+export function invokePluginSync(
+  command: string,
+  args: string[] = []
+): CheckResult {
+  const result = spawnSync(command, args, { encoding: 'utf-8' })
+  return {
+    status: validateState(result.status),
+    output: result.stdout
+  }
 }
 
 export function invokePlugin(
@@ -25,13 +50,8 @@ export function invokePlugin(
     })
 
     plugin.on('close', (code) => {
-      let status: State = 3
-      if (
-        code != null &&
-        (code === 0 || code === 1 || code === 2 || code === 3)
-      ) {
-        status = code
-        resolve({ status, output })
+      if (isState(code)) {
+        resolve({ status: validateState(code), output })
       } else {
         reject({ code, error })
       }
