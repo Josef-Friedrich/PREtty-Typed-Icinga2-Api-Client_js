@@ -8,8 +8,8 @@ jobs:
       # https://github.com/orgs/community/discussions/42127#discussioncomment-7591609
       icinga:
         image: icinga/icinga2
-        volumes:
-          - ${{ github.workspace }}/resources/etc-icinga2:/data/etc/icinga2
+        # volumes:
+        #   - ${{ github.workspace }}/resources/etc-icinga2:/data/etc/icinga2
         options: --name icinga
 
     steps:
