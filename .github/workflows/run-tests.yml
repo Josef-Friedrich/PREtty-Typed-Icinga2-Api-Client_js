@@ -14,7 +14,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Restart icinga
+    - name: Stop icinga
       uses: docker://docker
       with:
-        args: docker restart icinga
+        args: docker stop icinga
+    - name: Stop icinga
+      uses: docker://docker
+      with:
+        args: docker run -d -v ${{ github.workspace }}/resources/etc-icinga2:/data/etc/icinga2 icinga
+
+    # - name: Restart icinga
+    #   uses: docker://docker
+    #   with:
+    #     args: docker restart icinga
