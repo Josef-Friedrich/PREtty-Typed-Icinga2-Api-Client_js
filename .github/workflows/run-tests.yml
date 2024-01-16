@@ -4,22 +4,17 @@ on:
 jobs:
   run_tests:
     runs-on: ubuntu-latest
-    services:
-      # https://github.com/orgs/community/discussions/42127#discussioncomment-7591609
-      icinga:
-        image: icinga/icinga2
-        volumes:
-          - /tmp/etc-icinga2:/data/etc/icinga2
-        options: --name icinga
 
     steps:
     - uses: actions/checkout@v2
-    - run: sudo rm -rf /tmp/etc-icinga2
-    - run: sudo cp -fr resources/etc-icinga2 /tmp/etc-icinga2
-    - run: find /tmp/etc-icinga2
-    - run: sudo chmod -R 777 /tmp/etc-icinga2
-
-    - name: Restart icinga
+    - name: Start docker container
       uses: docker://docker
       with:
-        args: docker restart icinga
+        args: >-
+          docker run
+            --name icinga-master
+            -v ./resources/etc-icinga2:/data/etc/icinga2
+            -h icinga-master
+            -p 5665:5665
+            -e ICINGA_MASTER=1
+            -d
