@@ -14,8 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: rm -rf /tmp/etc-icinga2
-    - run: cp -fr resources/etc-icinga2 /tmp/etc-icinga2
+    - run: sudo rm -rf /tmp/etc-icinga2
+    - run: sudo cp -fr resources/etc-icinga2 /tmp/etc-icinga2
 
     - name: Restart icinga
       uses: docker://docker
