@@ -1,5 +1,7 @@
 name: Build TypeDoc
-on: [push]
+on:
+  workflow_dispatch:
+
 jobs:
   build_typedoc:
     runs-on: ubuntu-latest
