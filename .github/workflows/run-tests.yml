@@ -10,4 +10,4 @@ jobs:
     - name: Start docker container
       uses: docker://docker
       with:
-        args: run --name icinga-master -v ./resources/etc-icinga2:/data/etc/icinga2 -h icinga-master -p 5665:5665 -e ICINGA_MASTER=1 -d
+        args: run --name icinga-master -v ./resources/etc-icinga2:/data/etc/icinga2 -h icinga-master -p 5665:5665 -e ICINGA_MASTER=1 -d icinga/icinga2
