@@ -1,10 +1,11 @@
 /**
  * The API listener is used for distributed monitoring setups.
  */
-object ApiListener "api" {
 
-  accept_config = false
-  accept_commands = false
+object ApiListener "api" {
+  accept_config = true
+  accept_commands = true
 
   ticket_salt = TicketSalt
 }
+
