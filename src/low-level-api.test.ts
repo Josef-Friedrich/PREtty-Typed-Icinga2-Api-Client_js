@@ -54,7 +54,7 @@ describe('low-level-api.ts', () => {
       const apiUser = result[0]
 
       expect(apiUser.type).toBe('ApiUser')
-      expect(apiUser.name).toBe('api')
+      expect(apiUser.name).toBe('apiuser')
     })
 
     test('Host', async () => {

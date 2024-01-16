@@ -21,12 +21,31 @@ get_test_config:
 	sudo rsync -av --delete /etc/icinga2/ resources/etc-icinga2/
 	sudo chown -R jf:jf resources/etc-icinga2
 
+start_docker_container:
+	sudo chmod -R 777 ./resources/etc-icinga2
+	sudo docker run \
+		--name icinga-master \
+		--volume ./resources/etc-icinga2:/data/etc/icinga2 \
+		--hostname icinga-master \
+		--publish 5665:5665 \
+		--env ICINGA_MASTER=1 \
+		--detach \
+		icinga/icinga2
+	sleep 5
+	sudo docker logs icinga-master
+
+stop_docker_container:
+	-sudo docker stop icinga-master
+	-sudo docker rm icinga-master
+
 patch_config:
 	sudo cp /etc/icinga2-api-client.json /etc/icinga2-api-client.json.bak
 	sudo cp resources/icinga2-api-client.json /etc/icinga2-api-client.json
 
-test: set_test_config
+test_run:
 	npm run test
+
+test: stop_docker_container start_docker_container test_run stop_docker_container
 
 process_docs:
 	./resources/process-docs.mjs
