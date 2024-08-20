@@ -21,7 +21,7 @@ get_test_config:
 	sudo rsync -av --delete /etc/icinga2/ resources/etc-icinga2/
 	sudo chown -R jf:jf resources/etc-icinga2
 
-start_docker_container:
+docker_start:
 	sudo chmod -R 777 ./resources/etc-icinga2
 	sudo docker run \
 		--name icinga-master \
@@ -34,7 +34,7 @@ start_docker_container:
 	sleep 5
 	sudo docker logs icinga-master
 
-stop_docker_container:
+docker_stop:
 	-sudo docker stop icinga-master
 	-sudo docker rm icinga-master
 
