@@ -29,6 +29,7 @@ docker_start:
 		--hostname icinga-master \
 		--publish 5665:5665 \
 		--env ICINGA_MASTER=1 \
+		--rm \
 		--detach \
 		icinga/icinga2
 	sleep 5
@@ -45,7 +46,7 @@ patch_config:
 test_run:
 	npm run test
 
-test: stop_docker_container start_docker_container test_run stop_docker_container
+test: docker_stop docker_start test_run docker_stop
 
 process_docs:
 	./resources/process-docs.mjs

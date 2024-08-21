@@ -3,7 +3,6 @@ import { test, expect, describe } from 'vitest'
 import { queryObjects, createObject, deleteObject } from './low-level-api.js'
 
 import { getClient } from './client.js'
-import { debug } from './helper.test.js'
 
 const client = getClient()
 
