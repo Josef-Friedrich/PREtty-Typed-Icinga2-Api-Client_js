@@ -39,6 +39,37 @@ docker_stop:
 	-sudo docker stop icinga-master
 	-sudo docker rm icinga-master
 
+docker_login:
+	sudo docker exec -it icinga-master /bin/bash
+
+docker_create_api_certs:
+	# https://icinga.com/blog/2022/11/16/authenticating-icinga-2-api-users-with-tls-client-certificates/
+
+	sudo docker exec icinga-master /usr/sbin/icinga2 pki new-cert \
+		--cn my-api-client \
+		--key /data/my-api-client.key.pem \
+		--csr /data/my-api-client.csr.pem
+
+	sudo docker exec icinga-master /usr/sbin/icinga2 pki sign-csr \
+		--csr /data/my-api-client.csr.pem \
+		--cert /data/my-api-client.cert.pem
+
+	sudo docker cp icinga-master:/var/lib/icinga2/certs/ca.crt .
+	sudo docker cp icinga-master:/data/my-api-client.cert.pem .
+	sudo docker cp icinga-master:/data/my-api-client.key.pem .
+
+	sudo chown jf:jf ca.crt
+	sudo chown jf:jf my-api-client.cert.pem
+	sudo chown jf:jf my-api-client.key.pem
+
+	curl \
+		--cacert ca.crt \
+		--cert my-api-client.cert.pem \
+		--key my-api-client.key.pem \
+		--header 'Accept: application/json' \
+		--insecure \
+		'https://localhost:5665/v1/?pretty=1'
+
 patch_config:
 	sudo cp /etc/icinga2-api-client.json /etc/icinga2-api-client.json.bak
 	sudo cp resources/icinga2-api-client.json /etc/icinga2-api-client.json
