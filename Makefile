@@ -32,7 +32,7 @@ docker_start:
 		--rm \
 		--detach \
 		icinga/icinga2
-	sleep 5
+	sleep 1
 	sudo docker logs icinga-master
 
 docker_stop:
